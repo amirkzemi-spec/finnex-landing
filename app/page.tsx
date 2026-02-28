@@ -1,6 +1,5 @@
 // app/page.tsx
-// Drop-in replacement for your current landing page (Next.js + Tailwind).
-// Strong & declarative, hybrid tone, with a “project score” hero panel.
+// FINNEX Landing — Forest Green palette + "Our Work" track record section
 
 const Pillar = ({
   title,
@@ -12,7 +11,7 @@ const Pillar = ({
   tag: string;
 }) => (
   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-white/70">
+    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs text-emerald-300/80">
       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
       {tag}
     </div>
@@ -37,21 +36,81 @@ const Stat = ({
   </div>
 );
 
+const projects = [
+  {
+    year: "2022",
+    name: "AgriScore Pilot — Nigeria",
+    type: "Risk Scoring Model",
+    desc: "Built and tested the first version of our AI-based project scoring model across 40 smallholder cooperatives in Ogun State. Delivered structured credit profiles for NGO partners.",
+    tags: ["AI Scoring", "Pilot", "NGO"],
+    status: "Completed",
+  },
+  {
+    year: "2023",
+    name: "Milestone Disbursal System — Kenya",
+    type: "Fintech Infrastructure",
+    desc: "Designed and deployed a milestone-controlled fund release system for a DFI-backed maize program. Reduced capital leakage by enabling phased, verified disbursements.",
+    tags: ["DFI", "Milestone Finance", "Kenya"],
+    status: "Completed",
+  },
+  {
+    year: "2023",
+    name: "Field Verification Module",
+    type: "Monitoring & Verification",
+    desc: "Launched mobile-first field verification tooling allowing on-ground agents to attach evidence to project milestones in real time. Integrated with investor-facing dashboards.",
+    tags: ["Mobile", "Verification", "Real-time"],
+    status: "Completed",
+  },
+  {
+    year: "2024",
+    name: "FINNEX Platform v1 — Ghana",
+    type: "Full Platform Launch",
+    desc: "Shipped the first full version of FINNEX: investor dashboard, farmer profiles, project scoring, and monitoring in a unified platform. Piloted with a maize regeneration cooperative.",
+    tags: ["Platform", "Investors", "Ghana"],
+    status: "Live",
+  },
+  {
+    year: "2024–25",
+    name: "Impact Reporting Engine",
+    type: "Analytics & Reporting",
+    desc: "Built automated impact reporting covering yield improvements, jobs created, and CO₂ proxies — delivered as structured reports to fund managers and DFI partners.",
+    tags: ["Impact", "Reporting", "Analytics"],
+    status: "Live",
+  },
+  {
+    year: "2025–Now",
+    name: "FINNEX Capital Intelligence",
+    type: "Current Product",
+    desc: "Ongoing development of the full Agricultural Capital Intelligence suite — combining AI scoring, milestone disbursal, field verification, and investor-grade reporting in one place.",
+    tags: ["Active", "AI", "Full Stack"],
+    status: "Active",
+  },
+];
+
+const statusColor: Record<string, string> = {
+  Completed: "border-white/10 text-white/50 bg-white/[0.03]",
+  Live: "border-emerald-400/25 text-emerald-300 bg-emerald-400/[0.07]",
+  Active: "border-cyan-400/25 text-cyan-300 bg-cyan-400/[0.07]",
+};
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#070B10] text-white">
+    <main className="min-h-screen bg-[#0A1A0F] text-white">
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(1200px_600px_at_15%_10%,rgba(16,185,129,0.12),transparent_55%),radial-gradient(900px_500px_at_85%_20%,rgba(56,189,248,0.08),transparent_55%),radial-gradient(900px_600px_at_50%_90%,rgba(255,255,255,0.06),transparent_55%)]" />
-        <div className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:64px_64px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black" />
+        {/* Deep forest green radial glows */}
+        <div className="absolute inset-0 bg-[radial-gradient(1100px_550px_at_10%_5%,rgba(16,185,129,0.13),transparent_55%),radial-gradient(800px_500px_at_88%_15%,rgba(6,95,70,0.18),transparent_55%),radial-gradient(900px_600px_at_50%_95%,rgba(4,120,87,0.10),transparent_55%)]" />
+        {/* Subtle grid */}
+        <div className="absolute inset-0 opacity-[0.09] [background-image:linear-gradient(to_right,rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:64px_64px]" />
+        {/* Bottom fade */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-[#0A1A0F]" />
       </div>
 
-      {/* Top bar */}
+      {/* ── HEADER ── */}
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <div className="flex items-center gap-2">
-          <div className="h-9 w-9 rounded-xl border border-white/10 bg-white/[0.04] flex items-center justify-center">
-            <span className="text-sm font-semibold tracking-tight">FX</span>
+          <div className="h-9 w-9 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] flex items-center justify-center">
+            <span className="text-sm font-semibold tracking-tight text-emerald-300">FX</span>
           </div>
           <div className="leading-tight">
             <div className="text-sm font-semibold">FINNEX</div>
@@ -60,18 +119,13 @@ export default function Home() {
         </div>
 
         <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
-          <a href="#how" className="hover:text-white transition">
-            How it works
-          </a>
-          <a href="#why" className="hover:text-white transition">
-            Why FINNEX
-          </a>
-          <a href="#faq" className="hover:text-white transition">
-            FAQ
-          </a>
+          <a href="#how" className="hover:text-white transition">How it works</a>
+          <a href="#why" className="hover:text-white transition">Why FINNEX</a>
+          <a href="#our-work" className="hover:text-white transition">Our Work</a>
+          <a href="#faq" className="hover:text-white transition">FAQ</a>
           <a
             href="https://app.finnex.capital"
-            className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-white hover:bg-white/[0.06] transition"
+            className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-2 text-emerald-300 hover:bg-emerald-400/[0.13] transition"
           >
             Go to App
           </a>
@@ -79,17 +133,17 @@ export default function Home() {
 
         <a
           href="https://app.finnex.capital"
-          className="md:hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm hover:bg-white/[0.06] transition"
+          className="md:hidden rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-2 text-sm text-emerald-300 hover:bg-emerald-400/[0.13] transition"
         >
           App
         </a>
       </header>
 
-      {/* Hero */}
+      {/* ── HERO ── */}
       <section className="mx-auto max-w-6xl px-6 pb-20 pt-10">
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-white/70">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs text-emerald-300/80">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
               Verified projects • Milestone-controlled funding • Transparent reporting
             </div>
@@ -112,7 +166,7 @@ export default function Home() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="https://app.finnex.capital"
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-black hover:bg-emerald-300 transition"
+                className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-400 hover:text-black transition"
               >
                 View Investment Opportunities
               </a>
@@ -125,25 +179,23 @@ export default function Home() {
             </div>
 
             <div className="mt-10 grid grid-cols-3 gap-3 max-w-xl">
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <div className="text-xs text-white/55">Focus</div>
-                <div className="mt-1 text-sm font-semibold">Smallholders</div>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <div className="text-xs text-white/55">Model</div>
-                <div className="mt-1 text-sm font-semibold">Milestones</div>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <div className="text-xs text-white/55">Outputs</div>
-                <div className="mt-1 text-sm font-semibold">Impact + Return</div>
-              </div>
+              {[
+                { label: "Focus", value: "Smallholders" },
+                { label: "Model", value: "Milestones" },
+                { label: "Outputs", value: "Impact + Return" },
+              ].map((s) => (
+                <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                  <div className="text-xs text-white/55">{s.label}</div>
+                  <div className="mt-1 text-sm font-semibold">{s.value}</div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Hero card */}
           <div className="relative">
-            <div className="absolute -inset-4 rounded-[28px] bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-white/5 blur-2xl" />
-            <div className="relative rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
+            <div className="absolute -inset-4 rounded-[28px] bg-gradient-to-r from-emerald-600/15 via-emerald-500/10 to-cyan-500/10 blur-2xl" />
+            <div className="relative rounded-3xl border border-white/10 bg-[#0D1F15]/80 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.50)]">
               <div className="flex items-start justify-between">
                 <div>
                   <div className="text-xs text-white/55">Example opportunity</div>
@@ -200,7 +252,7 @@ export default function Home() {
               <div className="mt-6 flex gap-3">
                 <a
                   href="https://app.finnex.capital"
-                  className="flex-1 rounded-xl bg-emerald-400 px-4 py-2.5 text-center text-sm font-semibold text-black hover:bg-emerald-300 transition"
+                  className="flex-1 rounded-xl bg-emerald-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-emerald-400 hover:text-black transition"
                 >
                   Open Dashboard
                 </a>
@@ -216,7 +268,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* “Designed for” */}
+      {/* ── DESIGNED FOR ── */}
       <section id="why" className="mx-auto max-w-6xl px-6 pb-6">
         <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-8">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
@@ -252,7 +304,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* ── HOW IT WORKS ── */}
       <section id="how" className="mx-auto max-w-6xl px-6 py-16">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold tracking-tight">How FINNEX works</h2>
@@ -310,9 +362,94 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* ── OUR WORK ── */}
+      <section id="our-work" className="mx-auto max-w-6xl px-6 pb-20">
+        {/* Section header */}
+        <div className="mb-10">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs text-emerald-300/80 mb-4">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Track Record • 2022 – Present
+          </div>
+          <h2 className="text-2xl font-semibold tracking-tight">Our Work</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70">
+            FINNEX didn't start as a product — it started as a set of problems we kept running into in the field. Here's what we've built, tested, and shipped since 2022.
+          </p>
+        </div>
+
+        {/* Timeline */}
+        <div className="relative">
+          {/* Vertical line */}
+          <div className="absolute left-[11px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-400/40 via-emerald-400/20 to-transparent md:left-1/2 md:-translate-x-px hidden md:block" />
+
+          <div className="space-y-6">
+            {projects.map((p, i) => (
+              <div
+                key={p.name}
+                className={[
+                  "relative grid gap-4 md:grid-cols-2",
+                  i % 2 === 0 ? "md:[&>*:first-child]:order-1 md:[&>*:last-child]:order-2" : "md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1",
+                ].join(" ")}
+              >
+                {/* Year label — alternates sides on desktop */}
+                <div
+                  className={[
+                    "flex items-start",
+                    i % 2 === 0 ? "md:justify-end md:pr-10" : "md:justify-start md:pl-10",
+                  ].join(" ")}
+                >
+                  <div className="pt-1 md:pt-4">
+                    <div className="text-2xl font-semibold text-emerald-400/60 tabular-nums">
+                      {p.year}
+                    </div>
+                    <div className="mt-1 text-xs text-white/40 uppercase tracking-widest">{p.type}</div>
+                  </div>
+                </div>
+
+                {/* Dot on the center line */}
+                <div className="absolute left-1/2 top-5 -translate-x-1/2 hidden md:flex h-3 w-3 items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full border-2 border-emerald-400 bg-[#0A1A0F]" />
+                </div>
+
+                {/* Card */}
+                <div
+                  className={[
+                    i % 2 === 0 ? "md:pl-10" : "md:pr-10",
+                  ].join(" ")}
+                >
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:border-emerald-400/20 hover:bg-emerald-400/[0.03] transition">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-base font-semibold tracking-tight">{p.name}</div>
+                      <span
+                        className={[
+                          "shrink-0 rounded-full border px-2.5 py-0.5 text-xs",
+                          statusColor[p.status],
+                        ].join(" ")}
+                      >
+                        {p.status}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-white/65">{p.desc}</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {p.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 text-xs text-white/55"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
       <section className="mx-auto max-w-6xl px-6 pb-16">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-400/10 via-white/[0.04] to-cyan-400/10 p-8 md:p-10">
+        <div className="rounded-3xl border border-emerald-400/15 bg-gradient-to-r from-emerald-600/10 via-white/[0.03] to-cyan-600/10 p-8 md:p-10">
           <h2 className="text-2xl font-semibold tracking-tight">Ready to explore opportunities?</h2>
           <p className="mt-2 max-w-2xl text-sm text-white/70 leading-relaxed">
             Start with the dashboard UI now. Backend logic can be connected as your pipeline and scoring evolve.
@@ -320,7 +457,7 @@ export default function Home() {
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <a
               href="https://app.finnex.capital"
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-black hover:bg-emerald-300 transition"
+              className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-400 hover:text-black transition"
             >
               Open FINNEX App
             </a>
@@ -334,7 +471,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* ── FAQ ── */}
       <section id="faq" className="mx-auto max-w-6xl px-6 pb-20">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold tracking-tight">FAQ</h2>
@@ -359,12 +496,12 @@ export default function Home() {
             },
             {
               q: "Do you use blockchain?",
-              a: "It’s an optional capability for auditability and transparency. The core value is verification + reporting, regardless of the underlying tech.",
+              a: "It's an optional capability for auditability and transparency. The core value is verification + reporting, regardless of the underlying tech.",
             },
           ].map((item) => (
             <div
               key={item.q}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-6"
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-emerald-400/15 transition"
             >
               <div className="text-sm font-semibold">{item.q}</div>
               <div className="mt-2 text-sm leading-relaxed text-white/70">{item.a}</div>
@@ -373,22 +510,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── FOOTER ── */}
       <footer className="border-t border-white/10 bg-black/20">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 md:flex-row md:items-center md:justify-between">
           <div className="text-sm text-white/60">
             © {new Date().getFullYear()} FINNEX. All rights reserved.
           </div>
           <div className="flex items-center gap-5 text-sm text-white/60">
-            <a className="hover:text-white transition" href="#how">
-              How it works
-            </a>
-            <a className="hover:text-white transition" href="https://app.finnex.capital">
-              App
-            </a>
-            <a className="hover:text-white transition" href="mailto:info@finnex.capital">
-              Contact
-            </a>
+            <a className="hover:text-white transition" href="#how">How it works</a>
+            <a className="hover:text-white transition" href="#our-work">Our Work</a>
+            <a className="hover:text-white transition" href="https://app.finnex.capital">App</a>
+            <a className="hover:text-white transition" href="mailto:info@finnex.capital">Contact</a>
           </div>
         </div>
       </footer>
