@@ -95,15 +95,15 @@ const statusColor: Record<string, string> = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#0A1A0F] text-white">
+    <main className="min-h-screen bg-[#0F2D1A] text-white">
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        {/* Deep forest green radial glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(1100px_550px_at_10%_5%,rgba(16,185,129,0.13),transparent_55%),radial-gradient(800px_500px_at_88%_15%,rgba(6,95,70,0.18),transparent_55%),radial-gradient(900px_600px_at_50%_95%,rgba(4,120,87,0.10),transparent_55%)]" />
+        {/* Forest green radial glows */}
+        <div className="absolute inset-0 bg-[radial-gradient(1100px_550px_at_10%_5%,rgba(16,185,129,0.15),transparent_55%),radial-gradient(800px_500px_at_88%_15%,rgba(6,95,70,0.22),transparent_55%),radial-gradient(900px_600px_at_50%_95%,rgba(4,120,87,0.13),transparent_55%)]" />
         {/* Subtle grid */}
-        <div className="absolute inset-0 opacity-[0.09] [background-image:linear-gradient(to_right,rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:64px_64px]" />
+        <div className="absolute inset-0 opacity-[0.10] [background-image:linear-gradient(to_right,rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:64px_64px]" />
         {/* Bottom fade */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-[#0A1A0F]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-[#0F2D1A]" />
       </div>
 
       {/* ── HEADER ── */}
@@ -195,7 +195,7 @@ export default function Home() {
           {/* Hero card */}
           <div className="relative">
             <div className="absolute -inset-4 rounded-[28px] bg-gradient-to-r from-emerald-600/15 via-emerald-500/10 to-cyan-500/10 blur-2xl" />
-            <div className="relative rounded-3xl border border-white/10 bg-[#0D1F15]/80 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.50)]">
+            <div className="relative rounded-3xl border border-white/10 bg-[#112614]/80 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.50)]">
               <div className="flex items-start justify-between">
                 <div>
                   <div className="text-xs text-white/55">Example opportunity</div>
