@@ -1,529 +1,853 @@
-// app/page.tsx
-// FINNEX Landing — Forest Green palette + "Our Work" track record section
+"use client";
 
-const Pillar = ({
-  title,
-  desc,
-  tag,
-}: {
-  title: string;
-  desc: string;
-  tag: string;
-}) => (
-  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs text-emerald-300/80">
-      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-      {tag}
-    </div>
-    <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
-    <p className="mt-2 text-sm leading-relaxed text-white/70">{desc}</p>
-  </div>
-);
+import { useEffect, useState } from "react";
 
-const Stat = ({
-  label,
-  value,
-  note,
-}: {
-  label: string;
-  value: string;
-  note?: string;
-}) => (
-  <div className="rounded-xl border border-white/10 bg-black/30 px-4 py-3">
-    <div className="text-xs text-white/55">{label}</div>
-    <div className="mt-1 text-sm font-semibold">{value}</div>
-    {note ? <div className="mt-1 text-xs text-white/50">{note}</div> : null}
-  </div>
-);
+const DIMENSIONS = [
+  { code: "D1", name: "Agronomy", score: 87 },
+  { code: "D2", name: "Operator", score: 79 },
+  { code: "D3", name: "Market", score: 82 },
+  { code: "D4", name: "Finance", score: 74 },
+  { code: "D5", name: "Monitoring", score: 91 },
+  { code: "D6", name: "Impact", score: 88 },
+];
 
-const projects = [
+const SCORING_CARDS = [
   {
-    year: "2022",
-    name: "AgriScore Pilot — Nigeria",
-    type: "Risk Scoring Model",
-    desc: "Built and tested the first version of our AI-based project scoring model across 40 smallholder cooperatives in Ogun State. Delivered structured credit profiles for NGO partners.",
-    tags: ["AI Scoring", "Pilot", "NGO"],
-    status: "Completed",
+    code: "D1",
+    name: "Agronomy",
+    desc: "Soil health, crop suitability, yield history, and input utilization benchmarked against regional climate and productivity data.",
   },
   {
-    year: "2023",
-    name: "Milestone Disbursal System — Kenya",
-    type: "Fintech Infrastructure",
-    desc: "Designed and deployed a milestone-controlled fund release system for a DFI-backed maize program. Reduced capital leakage by enabling phased, verified disbursements.",
-    tags: ["DFI", "Milestone Finance", "Kenya"],
-    status: "Completed",
+    code: "D2",
+    name: "Operator",
+    desc: "Cooperative governance structure, management capacity, legal registration status, and verified repayment track record.",
   },
   {
-    year: "2023",
-    name: "Field Verification Module",
-    type: "Monitoring & Verification",
-    desc: "Launched mobile-first field verification tooling allowing on-ground agents to attach evidence to project milestones in real time. Integrated with investor-facing dashboards.",
-    tags: ["Mobile", "Verification", "Real-time"],
-    status: "Completed",
+    code: "D3",
+    name: "Market",
+    desc: "Offtake agreement quality, commodity price volatility, market access infrastructure, and demand-side risk profile.",
   },
   {
-    year: "2024",
-    name: "FINNEX Platform v1 — Ghana",
-    type: "Full Platform Launch",
-    desc: "Shipped the first full version of FINNEX: investor dashboard, farmer profiles, project scoring, and monitoring in a unified platform. Piloted with a maize regeneration cooperative.",
-    tags: ["Platform", "Investors", "Ghana"],
-    status: "Live",
+    code: "D4",
+    name: "Finance",
+    desc: "Project budget integrity, funding structure, cost of capital, capital efficiency, and projected financial sustainability.",
   },
   {
-    year: "2024–25",
-    name: "Impact Reporting Engine",
-    type: "Analytics & Reporting",
-    desc: "Built automated impact reporting covering yield improvements, jobs created, and CO₂ proxies — delivered as structured reports to fund managers and DFI partners.",
-    tags: ["Impact", "Reporting", "Analytics"],
-    status: "Live",
+    code: "D5",
+    name: "Monitoring",
+    desc: "Remote sensing coverage, field verification cadence, data pipeline quality, and real-time alert responsiveness.",
   },
   {
-    year: "2025–Now",
-    name: "FINNEX Capital Intelligence",
-    type: "Current Product",
-    desc: "Ongoing development of the full Agricultural Capital Intelligence suite — combining AI scoring, milestone disbursal, field verification, and investor-grade reporting in one place.",
-    tags: ["Active", "AI", "Full Stack"],
-    status: "Active",
+    code: "D6",
+    name: "Impact",
+    desc: "Quantified jobs created, income improvement per household, carbon proxy estimates, and SDG alignment indicators.",
   },
 ];
 
-const statusColor: Record<string, string> = {
-  Completed: "border-white/10 text-white/50 bg-white/[0.03]",
-  Live: "border-emerald-400/25 text-emerald-300 bg-emerald-400/[0.07]",
-  Active: "border-cyan-400/25 text-cyan-300 bg-cyan-400/[0.07]",
-};
+const STEPS = [
+  {
+    num: "01",
+    title: "Farmer onboarding",
+    desc: "Cooperatives submit structured project applications. Field agents verify land ownership, farmer profiles, input plans, and market linkages on the ground before scoring begins.",
+  },
+  {
+    num: "02",
+    title: "Scoring engine",
+    desc: "The six-dimension AI scoring model evaluates each project against sector benchmarks. Every output is reviewed by a human analyst before it reaches the investor layer.",
+  },
+  {
+    num: "03",
+    title: "Investor dashboard",
+    desc: "Verified projects enter the live pipeline with full score cards, field evidence, financial projections, and milestone-linked monitoring data.",
+  },
+];
+
+const STATS = [
+  { value: "6×", label: "Scoring dimensions" },
+  { value: "48h", label: "Turnaround per project" },
+  { value: "12+", label: "Countries covered" },
+  { value: "100%", label: "Admin reviewed" },
+];
+
+const PARTNERS = ["RVO", "IND", "IFC", "FMO", "AfDB", "CDC Group"];
+
+const CSS = `
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0A1A0F;
+    --card:     #0D1F12;
+    --sage:     #B8D4C0;
+    --green:    #4ADE80;
+    --muted:    rgba(184, 212, 192, 0.50);
+    --border:   rgba(74, 222, 128, 0.11);
+    --border-hi: rgba(74, 222, 128, 0.26);
+  }
+
+  html, body {
+    background: var(--bg) !important;
+    color: var(--sage) !important;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif !important;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ─────────────────────────────────── */
+  .fn-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10, 26, 15, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fn-nav-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .fn-logo {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--sage);
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+
+  .fn-logo-dot { color: var(--green); }
+
+  .fn-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    list-style: none;
+    flex: 1;
+  }
+
+  .fn-nav-links a {
+    font-size: 13.5px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .fn-nav-links a:hover { color: var(--sage); }
+
+  .fn-btn-access {
+    display: inline-block;
+    padding: 7px 16px;
+    border: 1px solid var(--green);
+    border-radius: 5px;
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    background: transparent;
+    white-space: nowrap;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .fn-btn-access:hover { background: rgba(74, 222, 128, 0.07); }
+
+  /* ── HERO ────────────────────────────────── */
+  .fn-hero {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 76px 24px 84px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .fn-eyebrow {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 18px;
+  }
+
+  .fn-h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(30px, 3.4vw, 44px);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--sage);
+    margin-bottom: 20px;
+  }
+
+  .fn-h1 em {
+    font-style: normal;
+    color: var(--green);
+  }
+
+  .fn-hero-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 445px;
+    margin-bottom: 32px;
+  }
+
+  .fn-btn-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .fn-btn-primary {
+    display: inline-block;
+    padding: 11px 22px;
+    background: var(--green);
+    color: #0A1A0F;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .fn-btn-primary:hover { opacity: 0.85; }
+
+  .fn-btn-ghost {
+    display: inline-block;
+    padding: 11px 22px;
+    background: transparent;
+    color: var(--sage);
+    border: 1px solid rgba(184, 212, 192, 0.22);
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .fn-btn-ghost:hover { border-color: rgba(184, 212, 192, 0.42); }
+
+  /* ── SCORE CARD ──────────────────────────── */
+  .fn-score-card {
+    background: var(--card);
+    border: 1px solid var(--border-hi);
+    border-radius: 10px;
+    padding: 24px;
+  }
+
+  .fn-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .fn-project-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sage);
+    margin-bottom: 7px;
+  }
+
+  .fn-project-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    line-height: 1.9;
+  }
+
+  .fn-score-wrap {
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .fn-score-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 40px;
+    font-weight: 500;
+    color: var(--green);
+    line-height: 1;
+    display: block;
+    min-width: 56px;
+    text-align: center;
+  }
+
+  .fn-score-sub {
+    font-size: 9.5px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .fn-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .fn-live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+    animation: fn-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes fn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); opacity: 1; }
+    50%       { box-shadow: 0 0 0 6px rgba(74,222,128,0); opacity: 0.65; }
+  }
+
+  .fn-live-text {
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .fn-risk-badge {
+    margin-left: auto;
+    padding: 2px 10px;
+    border: 1px solid rgba(74,222,128,0.32);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--green);
+    background: rgba(74,222,128,0.07);
+  }
+
+  .fn-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 0;
+  }
+
+  .fn-dim-bars { display: flex; flex-direction: column; gap: 10px; }
+
+  .fn-dim-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .fn-dim-name {
+    font-size: 11.5px;
+    color: var(--muted);
+    width: 70px;
+    flex-shrink: 0;
+  }
+
+  .fn-dim-track {
+    flex: 1;
+    height: 3px;
+    background: rgba(184,212,192,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .fn-dim-bar {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.1s cubic-bezier(0.34, 1.3, 0.64, 1);
+  }
+
+  .fn-dim-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--sage);
+    width: 26px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── STATS BAR ───────────────────────────── */
+  .fn-stats {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .fn-stats-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .fn-stat-cell {
+    padding: 38px 24px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+
+  .fn-stat-cell:last-child { border-right: none; }
+
+  .fn-stat-val {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: var(--green);
+    display: block;
+    line-height: 1;
+    margin-bottom: 7px;
+  }
+
+  .fn-stat-lbl {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* ── SECTIONS ────────────────────────────── */
+  .fn-section {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .fn-section-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+
+  .fn-section-h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(24px, 2.8vw, 34px);
+    font-weight: 600;
+    color: var(--sage);
+    letter-spacing: -0.02em;
+    margin-bottom: 40px;
+    line-height: 1.2;
+  }
+
+  /* ── HOW IT WORKS ────────────────────────── */
+  .fn-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .fn-step-card {
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    transition: border-color 0.2s;
+  }
+
+  .fn-step-card:hover { border-color: var(--border-hi); }
+
+  .fn-step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .fn-step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--sage);
+    margin-bottom: 10px;
+  }
+
+  .fn-step-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.72;
+  }
+
+  /* ── SCORING MODEL ───────────────────────── */
+  .fn-dim-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .fn-dim-card {
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    transition: border-color 0.2s;
+  }
+
+  .fn-dim-card:hover { border-color: var(--border-hi); }
+
+  .fn-dim-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 7px;
+  }
+
+  .fn-dim-card-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--sage);
+    margin-bottom: 8px;
+  }
+
+  .fn-dim-card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.67;
+  }
+
+  /* ── PARTNERS ────────────────────────────── */
+  .fn-partners {
+    border-top: 1px solid var(--border);
+    padding: 52px 24px;
+  }
+
+  .fn-partners-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .fn-partners-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+
+  .fn-partners-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .fn-partner-pill {
+    padding: 7px 18px;
+    border: 1px solid var(--border-hi);
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sage);
+    letter-spacing: 0.04em;
+    background: transparent;
+  }
+
+  /* ── CTA ─────────────────────────────────── */
+  .fn-cta {
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fn-cta-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 84px 24px;
+    text-align: center;
+  }
+
+  .fn-cta-h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(26px, 3.5vw, 40px);
+    font-weight: 600;
+    color: var(--sage);
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+
+  .fn-cta-sub {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.65;
+  }
+
+  .fn-cta-fine {
+    margin-top: 18px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* ── FOOTER ──────────────────────────────── */
+  .fn-footer {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 28px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .fn-footer-logo {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--sage);
+    letter-spacing: -0.01em;
+  }
+
+  .fn-footer-copy {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* ── RESPONSIVE ──────────────────────────── */
+  @media (max-width: 920px) {
+    .fn-hero         { grid-template-columns: 1fr; gap: 44px; padding-top: 52px; }
+    .fn-hero-body    { max-width: 100%; }
+    .fn-nav-links    { display: none; }
+    .fn-steps-grid   { grid-template-columns: 1fr; }
+    .fn-dim-cards    { grid-template-columns: repeat(2, 1fr); }
+    .fn-stats-inner  { grid-template-columns: repeat(2, 1fr); }
+    .fn-stat-cell:nth-child(2)  { border-right: none; }
+    .fn-stat-cell:nth-child(3), .fn-stat-cell:nth-child(4) {
+      border-top: 1px solid var(--border);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .fn-dim-cards   { grid-template-columns: 1fr; }
+    .fn-footer      { flex-direction: column; text-align: center; gap: 8px; }
+    .fn-section     { padding: 56px 20px; }
+    .fn-hero        { padding: 44px 20px 56px; }
+  }
+`;
 
 export default function Home() {
+  const [displayScore, setDisplayScore] = useState(0);
+  const [barsActive, setBarsActive] = useState(false);
+
+  useEffect(() => {
+    const TARGET = 83;
+    const DURATION = 1800;
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / DURATION, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setDisplayScore(Math.round(eased * TARGET));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+
+    const timer = setTimeout(() => setBarsActive(true), 350);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <main className="min-h-screen bg-[#0F2D1A] text-white">
-      {/* Background */}
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        {/* Forest green radial glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(1100px_550px_at_10%_5%,rgba(16,185,129,0.15),transparent_55%),radial-gradient(800px_500px_at_88%_15%,rgba(6,95,70,0.22),transparent_55%),radial-gradient(900px_600px_at_50%_95%,rgba(4,120,87,0.13),transparent_55%)]" />
-        {/* Subtle grid */}
-        <div className="absolute inset-0 opacity-[0.10] [background-image:linear-gradient(to_right,rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:64px_64px]" />
-        {/* Bottom fade */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-[#0F2D1A]" />
-      </div>
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      />
 
-      {/* ── HEADER ── */}
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <div className="flex items-center gap-2">
-          <div className="h-9 w-9 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] flex items-center justify-center">
-            <span className="text-sm font-semibold tracking-tight text-emerald-300">FX</span>
-          </div>
-          <div className="leading-tight">
-            <div className="text-sm font-semibold">FINNEX</div>
-            <div className="text-xs text-white/50">Agricultural Capital Intelligence</div>
-          </div>
-        </div>
+      <style>{CSS}</style>
 
-        <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
-          <a href="#how" className="hover:text-white transition">How it works</a>
-          <a href="#why" className="hover:text-white transition">Why FINNEX</a>
-          <a href="#our-work" className="hover:text-white transition">Our Work</a>
-          <a href="#faq" className="hover:text-white transition">FAQ</a>
-          <a
-            href="https://app.finnex.capital"
-            className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-2 text-emerald-300 hover:bg-emerald-400/[0.13] transition"
-          >
-            Go to App
+      {/* ── NAV ── */}
+      <nav className="fn-nav">
+        <div className="fn-nav-inner">
+          <a href="#" className="fn-logo">
+            FINNEX<span className="fn-logo-dot">.</span>
           </a>
-        </nav>
-
-        <a
-          href="https://app.finnex.capital"
-          className="md:hidden rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-2 text-sm text-emerald-300 hover:bg-emerald-400/[0.13] transition"
-        >
-          App
-        </a>
-      </header>
+          <ul className="fn-nav-links">
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#investors">For investors</a></li>
+            <li><a href="#impact">Impact</a></li>
+            <li><a href="#model">Data model</a></li>
+          </ul>
+          <a href="#access" className="fn-btn-access">Request access</a>
+        </div>
+      </nav>
 
       {/* ── HERO ── */}
-      <section className="mx-auto max-w-6xl px-6 pb-20 pt-10">
-        <div className="grid items-center gap-10 md:grid-cols-2">
-          <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs text-emerald-300/80">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Verified projects • Milestone-controlled funding • Transparent reporting
-            </div>
-
-            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl leading-[1.06]">
-              Making Smallholder Agriculture{" "}
-              <span className="bg-gradient-to-r from-emerald-300 via-emerald-400 to-cyan-300 bg-clip-text text-transparent">
-                Investable
-              </span>
-              .
-            </h1>
-
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
-              FINNEX transforms high-potential farm projects into structured opportunities through{" "}
-              <span className="text-white/85">AI-based scoring</span>,{" "}
-              <span className="text-white/85">milestone-based disbursement</span>, and{" "}
-              <span className="text-white/85">real-time verification</span>.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="https://app.finnex.capital"
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-400 hover:text-black transition"
-              >
-                View Investment Opportunities
-              </a>
-              <a
-                href="#how"
-                className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white hover:bg-white/[0.06] transition"
-              >
-                How It Works
-              </a>
-            </div>
-
-            <div className="mt-10 grid grid-cols-3 gap-3 max-w-xl">
-              {[
-                { label: "Focus", value: "Smallholders" },
-                { label: "Model", value: "Milestones" },
-                { label: "Outputs", value: "Impact + Return" },
-              ].map((s) => (
-                <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                  <div className="text-xs text-white/55">{s.label}</div>
-                  <div className="mt-1 text-sm font-semibold">{s.value}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Hero card */}
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-[28px] bg-gradient-to-r from-emerald-600/15 via-emerald-500/10 to-cyan-500/10 blur-2xl" />
-            <div className="relative rounded-3xl border border-white/10 bg-[#112614]/80 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.50)]">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="text-xs text-white/55">Example opportunity</div>
-                  <div className="mt-1 text-lg font-semibold tracking-tight">
-                    Maize Regeneration (Ghana)
-                  </div>
-                  <div className="mt-1 text-sm text-white/70">
-                    Smallholder cooperative • 18-month cycle • Offtake-ready
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-2">
-                  <div className="text-[10px] text-emerald-200/90">Project Score</div>
-                  <div className="text-xl font-semibold text-emerald-200">82</div>
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <Stat label="Projected IRR" value="12.4%" note="Scenario-based estimate" />
-                <Stat label="Funding Type" value="Milestone release" note="Verified disbursement" />
-                <Stat label="Milestones" value="2 / 4 verified" note="Next: Inputs delivery" />
-                <Stat label="Impact signals" value="Yield + jobs + CO₂" note="Measured & reported" />
-              </div>
-
-              <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm font-semibold">Milestone timeline</div>
-                  <div className="text-xs text-white/55">Demo view</div>
-                </div>
-                <div className="mt-4 space-y-3">
-                  {[
-                    { name: "Farmer verification", done: true },
-                    { name: "Inputs delivered", done: true },
-                    { name: "Field monitoring check", done: false },
-                    { name: "Harvest & sales settlement", done: false },
-                  ].map((m) => (
-                    <div key={m.name} className="flex items-center gap-3">
-                      <div
-                        className={[
-                          "h-2.5 w-2.5 rounded-full border",
-                          m.done
-                            ? "bg-emerald-400 border-emerald-400"
-                            : "bg-transparent border-white/20",
-                        ].join(" ")}
-                      />
-                      <div className="flex-1 text-sm text-white/80">{m.name}</div>
-                      <div className="text-xs text-white/50">
-                        {m.done ? "Verified" : "Pending"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-6 flex gap-3">
-                <a
-                  href="https://app.finnex.capital"
-                  className="flex-1 rounded-xl bg-emerald-500 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-emerald-400 hover:text-black transition"
-                >
-                  Open Dashboard
-                </a>
-                <a
-                  href="#how"
-                  className="flex-1 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-center text-sm font-semibold hover:bg-white/[0.06] transition"
-                >
-                  Learn More
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── DESIGNED FOR ── */}
-      <section id="why" className="mx-auto max-w-6xl px-6 pb-6">
-        <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-8">
-          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight">
-                Built for capital that demands evidence.
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70">
-                FINNEX is designed to reduce information asymmetry in smallholder finance—so
-                projects can be assessed, funded, and monitored with clarity.
-              </p>
-            </div>
-            <a
-              href="https://app.finnex.capital"
-              className="mt-4 md:mt-0 inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold hover:bg-white/[0.06] transition"
-            >
-              View the App
+      <div className="fn-hero">
+        {/* Left column */}
+        <div>
+          <span className="fn-eyebrow">Agricultural capital intelligence</span>
+          <h1 className="fn-h1">
+            Investable African farmland projects,
+            <br />
+            scored to <em>institutional</em> standard
+          </h1>
+          <p className="fn-hero-body">
+            FINNEX aggregates and scores smallholder cooperative projects across
+            sub-Saharan Africa, producing structured investment-grade profiles
+            reviewed by sector analysts. Built for RVOs, IND, and DFIs deploying
+            risk-adjusted capital into food systems.
+          </p>
+          <div className="fn-btn-row">
+            <a href="#access" className="fn-btn-primary">
+              Request portfolio access
+            </a>
+            <a href="#how" className="fn-btn-ghost">
+              See how it works
             </a>
           </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-            {["Impact investors", "Funds & family offices", "NGOs & DFIs", "Agribusiness partners"].map(
-              (t) => (
-                <div
-                  key={t}
-                  className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/80"
-                >
-                  {t}
-                </div>
-              )
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ── */}
-      <section id="how" className="mx-auto max-w-6xl px-6 py-16">
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">How FINNEX works</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70">
-            Three capabilities that turn high-potential farms into investable, monitored opportunities.
-          </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Pillar
-            tag="1 • Intelligence"
-            title="AI-Based Project Scoring"
-            desc="Evaluate risk, yield potential, and credibility using structured agricultural inputs and verification signals."
-          />
-          <Pillar
-            tag="2 • Control"
-            title="Milestone-Based Fund Disbursement"
-            desc="Release capital only after progress is verified—improving accountability and reducing deployment risk."
-          />
-          <Pillar
-            tag="3 • Transparency"
-            title="Real-Time Monitoring & Reporting"
-            desc="Track project status and measurable outcomes—so investors see where funds go and what changes."
-          />
-        </div>
-
-        <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-8">
-          <div className="grid gap-6 md:grid-cols-3">
+        {/* Right column — animated score card */}
+        <div className="fn-score-card">
+          <div className="fn-card-top">
             <div>
-              <div className="text-xs text-white/55">What you get</div>
-              <div className="mt-2 text-base font-semibold">A trustworthy investment pipeline</div>
-              <p className="mt-2 text-sm text-white/70 leading-relaxed">
-                Verified farmer profiles, structured project pages, and consistent reporting—built to scale.
-              </p>
+              <div className="fn-project-name">Nakuru Maize Cooperative</div>
+              <div className="fn-project-meta">
+                PRJ-2024-KEN-0047
+                <br />
+                Kenya · Maize + Soy · $84K
+              </div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="text-sm font-semibold">Typical metrics</div>
-              <ul className="mt-3 space-y-2 text-sm text-white/70">
-                <li>• Repayment & deployment status</li>
-                <li>• Yield / productivity improvements</li>
-                <li>• Jobs and local income signals</li>
-                <li>• Climate outcomes (where measurable)</li>
-              </ul>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="text-sm font-semibold">Governance signals</div>
-              <ul className="mt-3 space-y-2 text-sm text-white/70">
-                <li>• Field verification checkpoints</li>
-                <li>• Digital evidence attachments</li>
-                <li>• Audit-ready milestone history</li>
-                <li>• Investor-facing transparency</li>
-              </ul>
+            <div className="fn-score-wrap">
+              <span className="fn-score-num">{displayScore}</span>
+              <span className="fn-score-sub">Overall score</span>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ── OUR WORK ── */}
-      <section id="our-work" className="mx-auto max-w-6xl px-6 pb-20">
-        {/* Section header */}
-        <div className="mb-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs text-emerald-300/80 mb-4">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            Track Record • 2022 – Present
+          <div className="fn-status-row">
+            <div className="fn-live-dot" />
+            <span className="fn-live-text">Live monitoring active</span>
+            <span className="fn-risk-badge">Low risk</span>
           </div>
-          <h2 className="text-2xl font-semibold tracking-tight">Our Work</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70">
-            FINNEX didn't start as a product — it started as a set of problems we kept running into in the field. Here's what we've built, tested, and shipped since 2022.
-          </p>
-        </div>
 
-        {/* Timeline */}
-        <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-[11px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-400/40 via-emerald-400/20 to-transparent md:left-1/2 md:-translate-x-px hidden md:block" />
+          <div className="fn-divider" />
 
-          <div className="space-y-6">
-            {projects.map((p, i) => (
-              <div
-                key={p.name}
-                className={[
-                  "relative grid gap-4 md:grid-cols-2",
-                  i % 2 === 0 ? "md:[&>*:first-child]:order-1 md:[&>*:last-child]:order-2" : "md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1",
-                ].join(" ")}
-              >
-                {/* Year label — alternates sides on desktop */}
-                <div
-                  className={[
-                    "flex items-start",
-                    i % 2 === 0 ? "md:justify-end md:pr-10" : "md:justify-start md:pl-10",
-                  ].join(" ")}
-                >
-                  <div className="pt-1 md:pt-4">
-                    <div className="text-2xl font-semibold text-emerald-400/60 tabular-nums">
-                      {p.year}
-                    </div>
-                    <div className="mt-1 text-xs text-white/40 uppercase tracking-widest">{p.type}</div>
-                  </div>
+          <div className="fn-dim-bars">
+            {DIMENSIONS.map((dim, i) => (
+              <div key={dim.code} className="fn-dim-row">
+                <span className="fn-dim-name">{dim.name}</span>
+                <div className="fn-dim-track">
+                  <div
+                    className="fn-dim-bar"
+                    style={{
+                      width: barsActive ? `${dim.score}%` : "0%",
+                      transitionDelay: barsActive ? `${i * 75}ms` : "0ms",
+                    }}
+                  />
                 </div>
-
-                {/* Dot on the center line */}
-                <div className="absolute left-1/2 top-5 -translate-x-1/2 hidden md:flex h-3 w-3 items-center justify-center">
-                  <div className="h-2.5 w-2.5 rounded-full border-2 border-emerald-400 bg-[#0A1A0F]" />
-                </div>
-
-                {/* Card */}
-                <div
-                  className={[
-                    i % 2 === 0 ? "md:pl-10" : "md:pr-10",
-                  ].join(" ")}
-                >
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:border-emerald-400/20 hover:bg-emerald-400/[0.03] transition">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="text-base font-semibold tracking-tight">{p.name}</div>
-                      <span
-                        className={[
-                          "shrink-0 rounded-full border px-2.5 py-0.5 text-xs",
-                          statusColor[p.status],
-                        ].join(" ")}
-                      >
-                        {p.status}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-sm leading-relaxed text-white/65">{p.desc}</p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {p.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 text-xs text-white/55"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <span className="fn-dim-val">{dim.score}</span>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ── CTA ── */}
-      <section className="mx-auto max-w-6xl px-6 pb-16">
-        <div className="rounded-3xl border border-emerald-400/15 bg-gradient-to-r from-emerald-600/10 via-white/[0.03] to-cyan-600/10 p-8 md:p-10">
-          <h2 className="text-2xl font-semibold tracking-tight">Ready to explore opportunities?</h2>
-          <p className="mt-2 max-w-2xl text-sm text-white/70 leading-relaxed">
-            Start with the dashboard UI now. Backend logic can be connected as your pipeline and scoring evolve.
-          </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="https://app.finnex.capital"
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-400 hover:text-black transition"
-            >
-              Open FINNEX App
-            </a>
-            <a
-              href="#faq"
-              className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold hover:bg-white/[0.06] transition"
-            >
-              Read FAQ
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ ── */}
-      <section id="faq" className="mx-auto max-w-6xl px-6 pb-20">
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">FAQ</h2>
-          <p className="mt-2 max-w-2xl text-sm text-white/70 leading-relaxed">
-            Early-stage clarity. You can refine these as the product and compliance posture mature.
-          </p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {[
-            {
-              q: "Is FINNEX for individuals or institutions?",
-              a: "Hybrid for now. The platform is designed to support both mission-aligned individuals and professional capital partners.",
-            },
-            {
-              q: "How is risk reduced?",
-              a: "Through verified project onboarding, AI-assisted scoring signals, and milestone-based capital disbursement with monitoring.",
-            },
-            {
-              q: "Is this a marketplace or a financing operator?",
-              a: "FINNEX is a platform that structures and monitors investable opportunities. The exact model can evolve by jurisdiction and partner type.",
-            },
-            {
-              q: "Do you use blockchain?",
-              a: "It's an optional capability for auditability and transparency. The core value is verification + reporting, regardless of the underlying tech.",
-            },
-          ].map((item) => (
-            <div
-              key={item.q}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-emerald-400/15 transition"
-            >
-              <div className="text-sm font-semibold">{item.q}</div>
-              <div className="mt-2 text-sm leading-relaxed text-white/70">{item.a}</div>
+      {/* ── STATS BAR ── */}
+      <div className="fn-stats" id="investors">
+        <div className="fn-stats-inner">
+          {STATS.map((s) => (
+            <div key={s.label} className="fn-stat-cell">
+              <span className="fn-stat-val">{s.value}</span>
+              <span className="fn-stat-lbl">{s.label}</span>
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* ── FOOTER ── */}
-      <footer className="border-t border-white/10 bg-black/20">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 md:flex-row md:items-center md:justify-between">
-          <div className="text-sm text-white/60">
-            © {new Date().getFullYear()} FINNEX. All rights reserved.
-          </div>
-          <div className="flex items-center gap-5 text-sm text-white/60">
-            <a className="hover:text-white transition" href="#how">How it works</a>
-            <a className="hover:text-white transition" href="#our-work">Our Work</a>
-            <a className="hover:text-white transition" href="https://app.finnex.capital">App</a>
-            <a className="hover:text-white transition" href="mailto:info@finnex.capital">Contact</a>
+      {/* ── HOW IT WORKS ── */}
+      <div className="fn-section" id="how">
+        <div className="fn-section-label">Process</div>
+        <h2 className="fn-section-h2">How it works</h2>
+        <div className="fn-steps-grid">
+          {STEPS.map((s) => (
+            <div key={s.num} className="fn-step-card">
+              <span className="fn-step-num">{s.num}</span>
+              <div className="fn-step-title">{s.title}</div>
+              <div className="fn-step-desc">{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── SCORING MODEL ── */}
+      <div
+        className="fn-section"
+        id="model"
+        style={{ paddingTop: 0 }}
+      >
+        <div className="fn-section-label">Methodology</div>
+        <h2 className="fn-section-h2">Six-dimension scoring model</h2>
+        <div className="fn-dim-cards">
+          {SCORING_CARDS.map((d) => (
+            <div key={d.code} className="fn-dim-card">
+              <span className="fn-dim-code">{d.code}</span>
+              <div className="fn-dim-card-name">{d.name}</div>
+              <div className="fn-dim-card-desc">{d.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PARTNERS ── */}
+      <div className="fn-partners" id="impact">
+        <div className="fn-partners-inner">
+          <div className="fn-partners-label">Designed for</div>
+          <div className="fn-partners-row">
+            {PARTNERS.map((p) => (
+              <span key={p} className="fn-partner-pill">
+                {p}
+              </span>
+            ))}
           </div>
         </div>
+      </div>
+
+      {/* ── CTA ── */}
+      <div className="fn-cta" id="access">
+        <div className="fn-cta-inner">
+          <h2 className="fn-cta-h2">Start reviewing real projects</h2>
+          <p className="fn-cta-sub">
+            Apply for investor access to the live FINNEX project pipeline.
+          </p>
+          <a href="mailto:invest@finnex.capital" className="fn-btn-primary">
+            Apply for access
+          </a>
+          <p className="fn-cta-fine">
+            Responses within 2 business days · NDA available on request
+          </p>
+        </div>
+      </div>
+
+      {/* ── FOOTER ── */}
+      <footer style={{ borderTop: "1px solid var(--border)" }}>
+        <div className="fn-footer">
+          <span className="fn-footer-logo">FINNEX.capital</span>
+          <span className="fn-footer-copy">
+            © {new Date().getFullYear()} FINNEX. All rights reserved.
+          </span>
+        </div>
       </footer>
-    </main>
+    </>
   );
 }
