@@ -34,3 +34,38 @@
 ### Key lesson
 - Root domain CNAME on Hostinger becomes ALIAS — not a bug
 - Railway needs its specific subdomain (e.g. `n3umwhdo.up.railway.app`) not the generic `finnex-landing-production.up.railway.app` for custom domain validation
+
+---
+
+## Session 3 fixes & final wiring (today)
+
+### Landing page fixes (finnex-landing)
+- Removed all mentions of RVO, IND, DFIs as named target audiences
+- Hero body, CTA, and partners section rewritten for two-sided platform positioning
+- "For farmers" and "For investors" two-column section replaces partner pills
+- All mailto: links replaced with href="#" (to be wired in future)
+- "Submit your project" and "Start your application →" both now point to https://finnex-app-production.up.railway.app/farmer/apply
+- Commits: 203db4b (copy reposition), 64aeeec (farmer form link fix)
+
+### Farmer form fix (finnex-app)
+- app/farmer/apply/page.tsx is now fully public — no auth required
+- Removed AppShell with investor nav, role badge, and user avatar
+- Replaced with clean minimal nav: FINNEX. logo only (Playfair Display, #15803d)
+- Form logic (4 steps, validation, submit) untouched
+- middleware.ts confirmed: /farmer/apply is not protected (matcher only covers /dashboard/* /admin/*)
+- Commit: 04f05fc
+
+### Full platform flow (working end to end)
+1. finnex.capital → "Submit your project" → /farmer/apply (public)
+2. Farmer completes 4-step form → POST /api/farmer/apply → scored → saved to Supabase as "pending"
+3. Admin logs in at /admin → reviews submission → Approve or Reject
+4. Approved projects appear on /dashboard (investors only, invite-only access)
+5. Admin invites investor via email → magic link → investor sets password → sees approved projects
+6. Investor clicks project → full 6-dimension detail page
+
+### Known todos
+- app.finnex.capital custom domain for finnex-app (still on Railway URL)
+- Branded Supabase email templates for investor invites
+- Delete or replace test submissions ("erf", "Test Farm") before real demo
+- Farmer confirmation email after submission
+- Approve test projects from /admin to populate investor dashboard
