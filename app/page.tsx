@@ -69,7 +69,6 @@ const STATS = [
   { value: "100%", label: "Admin reviewed" },
 ];
 
-const PARTNERS = ["RVO", "IND", "IFC", "FMO", "AfDB", "CDC Group"];
 
 const CSS = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -524,7 +523,7 @@ const CSS = `
     line-height: 1.67;
   }
 
-  /* ── PARTNERS ────────────────────────────── */
+  /* ── AUDIENCE SPLIT ─────────────────────── */
   .fn-partners {
     border-top: 1px solid var(--border);
     padding: 52px 24px;
@@ -535,31 +534,35 @@ const CSS = `
     margin: 0 auto;
   }
 
-  .fn-partners-label {
+  .fn-audience-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .fn-audience-card {
+    padding: 36px 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    transition: border-color 0.2s;
+  }
+
+  .fn-audience-card:hover { border-color: var(--border-hi); }
+
+  .fn-audience-label {
     font-size: 10.5px;
     font-weight: 500;
     letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 18px;
+    color: var(--green);
+    margin-bottom: 12px;
   }
 
-  .fn-partners-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .fn-partner-pill {
-    padding: 7px 18px;
-    border: 1px solid var(--border-hi);
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 500;
+  .fn-audience-desc {
+    font-size: 15px;
     color: var(--sage);
-    letter-spacing: 0.04em;
-    background: transparent;
+    line-height: 1.7;
   }
 
   /* ── CTA ─────────────────────────────────── */
@@ -623,12 +626,13 @@ const CSS = `
 
   /* ── RESPONSIVE ──────────────────────────── */
   @media (max-width: 920px) {
-    .fn-hero         { grid-template-columns: 1fr; gap: 44px; padding-top: 52px; }
-    .fn-hero-body    { max-width: 100%; }
-    .fn-nav-links    { display: none; }
-    .fn-steps-grid   { grid-template-columns: 1fr; }
-    .fn-dim-cards    { grid-template-columns: repeat(2, 1fr); }
-    .fn-stats-inner  { grid-template-columns: repeat(2, 1fr); }
+    .fn-hero          { grid-template-columns: 1fr; gap: 44px; padding-top: 52px; }
+    .fn-hero-body     { max-width: 100%; }
+    .fn-nav-links     { display: none; }
+    .fn-steps-grid    { grid-template-columns: 1fr; }
+    .fn-dim-cards     { grid-template-columns: repeat(2, 1fr); }
+    .fn-stats-inner   { grid-template-columns: repeat(2, 1fr); }
+    .fn-audience-grid { grid-template-columns: 1fr; }
     .fn-stat-cell:nth-child(2)  { border-right: none; }
     .fn-stat-cell:nth-child(3), .fn-stat-cell:nth-child(4) {
       border-top: 1px solid var(--border);
@@ -688,7 +692,7 @@ export default function Home() {
             <li><a href="#impact">Impact</a></li>
             <li><a href="#model">Data model</a></li>
           </ul>
-          <a href="#access" className="fn-btn-access">Request access</a>
+          <a href="#access" className="fn-btn-access">Get started</a>
         </div>
       </nav>
 
@@ -703,10 +707,9 @@ export default function Home() {
             scored to <em>institutional</em> standard
           </h1>
           <p className="fn-hero-body">
-            FINNEX aggregates and scores smallholder cooperative projects across
-            sub-Saharan Africa, producing structured investment-grade profiles
-            reviewed by sector analysts. Built for RVOs, IND, and DFIs deploying
-            risk-adjusted capital into food systems.
+            FINNEX connects African smallholder farming cooperatives with
+            institutional capital. Every project is structured, scored across six
+            dimensions, and reviewed before reaching investors.
           </p>
           <div className="fn-btn-row">
             <a href="#access" className="fn-btn-primary">
@@ -809,16 +812,24 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── PARTNERS ── */}
+      {/* ── AUDIENCE SPLIT ── */}
       <div className="fn-partners" id="impact">
         <div className="fn-partners-inner">
-          <div className="fn-partners-label">Designed for</div>
-          <div className="fn-partners-row">
-            {PARTNERS.map((p) => (
-              <span key={p} className="fn-partner-pill">
-                {p}
-              </span>
-            ))}
+          <div className="fn-audience-grid">
+            <div className="fn-audience-card">
+              <div className="fn-audience-label">For farmers</div>
+              <p className="fn-audience-desc">
+                Submit your project and get a structured investment-grade profile
+                that speaks the language of institutional capital.
+              </p>
+            </div>
+            <div className="fn-audience-card">
+              <div className="fn-audience-label">For investors</div>
+              <p className="fn-audience-desc">
+                Browse scored, admin-reviewed agricultural projects with full
+                dimension breakdowns and risk classifications.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -826,9 +837,11 @@ export default function Home() {
       {/* ── CTA ── */}
       <div className="fn-cta" id="access">
         <div className="fn-cta-inner">
-          <h2 className="fn-cta-h2">Start reviewing real projects</h2>
+          <h2 className="fn-cta-h2">A smarter pipeline for agricultural capital.</h2>
           <p className="fn-cta-sub">
-            Apply for investor access to the live FINNEX project pipeline.
+            Whether you manage a cooperative or deploy capital into emerging
+            markets — FINNEX gives you the structure to move faster and with more
+            confidence.
           </p>
           <a href="mailto:invest@finnex.capital" className="fn-btn-primary">
             Apply for access
