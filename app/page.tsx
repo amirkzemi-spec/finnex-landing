@@ -565,6 +565,18 @@ const CSS = `
     line-height: 1.7;
   }
 
+  .fn-audience-link {
+    display: inline-block;
+    margin-top: 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--green);
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .fn-audience-link:hover { opacity: 0.75; }
+
   /* ── CTA ─────────────────────────────────── */
   .fn-cta {
     background: var(--card);
@@ -822,6 +834,14 @@ export default function Home() {
                 Submit your project and get a structured investment-grade profile
                 that speaks the language of institutional capital.
               </p>
+              <a
+                href="https://finnex-app-production.up.railway.app"
+                className="fn-audience-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Start your application →
+              </a>
             </div>
             <div className="fn-audience-card">
               <div className="fn-audience-label">For investors</div>
@@ -843,9 +863,19 @@ export default function Home() {
             markets — FINNEX gives you the structure to move faster and with more
             confidence.
           </p>
-          <a href="mailto:invest@finnex.capital" className="fn-btn-primary">
-            Apply for access
-          </a>
+          <div className="fn-btn-row" style={{ justifyContent: "center" }}>
+            <a href="#" className="fn-btn-primary">
+              Apply for access
+            </a>
+            <a
+              href="https://finnex-app-production.up.railway.app"
+              className="fn-btn-ghost"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Submit your project
+            </a>
+          </div>
           <p className="fn-cta-fine">
             Responses within 2 business days · NDA available on request
           </p>
