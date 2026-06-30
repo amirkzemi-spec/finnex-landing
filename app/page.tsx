@@ -864,7 +864,7 @@ export default function Home() {
             confidence.
           </p>
           <div className="fn-btn-row" style={{ justifyContent: "center" }}>
-            <a href="#" className="fn-btn-primary">
+            <a href="mailto:invest@finnex.capital?subject=Investor%20Access%20Request" className="fn-btn-primary">
               Apply for access
             </a>
             <a
