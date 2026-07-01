@@ -1,3 +1,4 @@
+Canonical strategy documentation (target market, roadmap, open product questions) lives in `finnex-api/STRATEGY.md`.
 
 ---
 
