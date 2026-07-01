@@ -835,7 +835,7 @@ export default function Home() {
                 that speaks the language of institutional capital.
               </p>
               <a
-                href="https://finnex-app-production.up.railway.app/farmer/apply"
+                href="https://app.finnex.capital/farmer/apply"
                 className="fn-audience-link"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -868,7 +868,7 @@ export default function Home() {
               Apply for access
             </a>
             <a
-              href="https://finnex-app-production.up.railway.app/farmer/apply"
+              href="https://app.finnex.capital/farmer/apply"
               className="fn-btn-ghost"
               target="_blank"
               rel="noopener noreferrer"
