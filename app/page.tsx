@@ -65,7 +65,7 @@ const STEPS = [
 const STATS = [
   { value: "6×", label: "Scoring dimensions" },
   { value: "48h", label: "Turnaround per project" },
-  { value: "12+", label: "Countries covered" },
+  { value: "5", label: "Target markets" },
   { value: "100%", label: "Admin reviewed" },
 ];
 
@@ -74,11 +74,14 @@ const CSS = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:       #0A1A0F;
+    --bg:       #FAF9F5;
     --card:     #0D1F12;
-    --sage:     #B8D4C0;
+    --sage:     #12251A;
+    --sage-on-dark: #B8D4C0;
     --green:    #4ADE80;
-    --muted:    rgba(184, 212, 192, 0.50);
+    --green-text: #14532D;
+    --muted:    rgba(18, 37, 26, 0.55);
+    --muted-on-dark: rgba(184, 212, 192, 0.50);
     --border:   rgba(74, 222, 128, 0.11);
     --border-hi: rgba(74, 222, 128, 0.26);
   }
@@ -99,7 +102,7 @@ const CSS = `
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(10, 26, 15, 0.92);
+    background: rgba(250, 249, 245, 0.92);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     border-bottom: 1px solid var(--border);
@@ -125,7 +128,7 @@ const CSS = `
     text-decoration: none;
   }
 
-  .fn-logo-dot { color: var(--green); }
+  .fn-logo-dot { color: var(--green-text); }
 
   .fn-nav-links {
     display: flex;
@@ -147,9 +150,9 @@ const CSS = `
   .fn-btn-access {
     display: inline-block;
     padding: 7px 16px;
-    border: 1px solid var(--green);
+    border: 1px solid var(--green-text);
     border-radius: 5px;
-    color: var(--green);
+    color: var(--green-text);
     font-size: 13px;
     font-weight: 500;
     text-decoration: none;
@@ -178,7 +181,7 @@ const CSS = `
     font-weight: 500;
     letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: var(--green);
+    color: var(--green-text);
     margin-bottom: 18px;
   }
 
@@ -232,7 +235,7 @@ const CSS = `
     padding: 11px 22px;
     background: transparent;
     color: var(--sage);
-    border: 1px solid rgba(184, 212, 192, 0.22);
+    border: 1px solid rgba(18, 37, 26, 0.22);
     border-radius: 5px;
     font-size: 14px;
     font-weight: 500;
@@ -241,7 +244,7 @@ const CSS = `
     transition: border-color 0.15s;
   }
 
-  .fn-btn-ghost:hover { border-color: rgba(184, 212, 192, 0.42); }
+  .fn-btn-ghost:hover { border-color: rgba(18, 37, 26, 0.42); }
 
   /* ── SCORE CARD ──────────────────────────── */
   .fn-score-card {
@@ -262,14 +265,27 @@ const CSS = `
   .fn-project-name {
     font-size: 15px;
     font-weight: 600;
-    color: var(--sage);
+    color: var(--sage-on-dark);
     margin-bottom: 7px;
+  }
+
+  .fn-sample-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    margin-bottom: 7px;
+    border: 1px solid rgba(184, 212, 192, 0.22);
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-on-dark);
   }
 
   .fn-project-meta {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10.5px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
     line-height: 1.9;
   }
 
@@ -291,7 +307,7 @@ const CSS = `
 
   .fn-score-sub {
     font-size: 9.5px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     display: block;
@@ -321,7 +337,7 @@ const CSS = `
 
   .fn-live-text {
     font-size: 11.5px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
   }
 
   .fn-risk-badge {
@@ -351,7 +367,7 @@ const CSS = `
 
   .fn-dim-name {
     font-size: 11.5px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
     width: 70px;
     flex-shrink: 0;
   }
@@ -375,7 +391,7 @@ const CSS = `
   .fn-dim-val {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    color: var(--sage);
+    color: var(--sage-on-dark);
     width: 26px;
     text-align: right;
     flex-shrink: 0;
@@ -416,7 +432,7 @@ const CSS = `
 
   .fn-stat-lbl {
     font-size: 12.5px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
   }
 
   /* ── SECTIONS ────────────────────────────── */
@@ -431,7 +447,7 @@ const CSS = `
     font-weight: 500;
     letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: var(--green);
+    color: var(--green-text);
     margin-bottom: 10px;
   }
 
@@ -474,13 +490,13 @@ const CSS = `
   .fn-step-title {
     font-size: 16px;
     font-weight: 600;
-    color: var(--sage);
+    color: var(--sage-on-dark);
     margin-bottom: 10px;
   }
 
   .fn-step-desc {
     font-size: 13.5px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
     line-height: 1.72;
   }
 
@@ -513,13 +529,13 @@ const CSS = `
   .fn-dim-card-name {
     font-size: 14.5px;
     font-weight: 600;
-    color: var(--sage);
+    color: var(--sage-on-dark);
     margin-bottom: 8px;
   }
 
   .fn-dim-card-desc {
     font-size: 13px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
     line-height: 1.67;
   }
 
@@ -561,7 +577,7 @@ const CSS = `
 
   .fn-audience-desc {
     font-size: 15px;
-    color: var(--sage);
+    color: var(--sage-on-dark);
     line-height: 1.7;
   }
 
@@ -595,14 +611,14 @@ const CSS = `
     font-family: 'Playfair Display', Georgia, serif;
     font-size: clamp(26px, 3.5vw, 40px);
     font-weight: 600;
-    color: var(--sage);
+    color: var(--sage-on-dark);
     letter-spacing: -0.02em;
     margin-bottom: 14px;
   }
 
   .fn-cta-sub {
     font-size: 15px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
     margin-bottom: 32px;
     line-height: 1.65;
   }
@@ -610,7 +626,7 @@ const CSS = `
   .fn-cta-fine {
     margin-top: 18px;
     font-size: 12.5px;
-    color: var(--muted);
+    color: var(--muted-on-dark);
   }
 
   /* ── FOOTER ──────────────────────────────── */
@@ -714,9 +730,9 @@ export default function Home() {
         <div>
           <span className="fn-eyebrow">Agricultural capital intelligence</span>
           <h1 className="fn-h1">
-            Investable African farmland projects,
+            African farmland,
             <br />
-            scored to <em>institutional</em> standard
+            scored for <em>institutional capital</em>.
           </h1>
           <p className="fn-hero-body">
             FINNEX connects African smallholder farming cooperatives with
@@ -738,6 +754,7 @@ export default function Home() {
           <div className="fn-card-top">
             <div>
               <div className="fn-project-name">Nakuru Maize Cooperative</div>
+              <span className="fn-sample-tag">Sample project</span>
               <div className="fn-project-meta">
                 PRJ-2024-KEN-0047
                 <br />
