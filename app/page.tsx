@@ -246,6 +246,15 @@ const CSS = `
 
   .fn-btn-ghost:hover { border-color: rgba(18, 37, 26, 0.42); }
 
+  /* .fn-btn-ghost is reused inside .fn-cta, which sits on the dark --card
+     background — override to the on-dark values so it isn't dark-on-dark. */
+  .fn-cta .fn-btn-ghost {
+    color: var(--sage-on-dark);
+    border-color: rgba(184, 212, 192, 0.22);
+  }
+
+  .fn-cta .fn-btn-ghost:hover { border-color: rgba(184, 212, 192, 0.42); }
+
   /* ── SCORE CARD ──────────────────────────── */
   .fn-score-card {
     background: var(--card);
