@@ -752,8 +752,13 @@ export default function Home() {
             <a href="#access" className="fn-btn-primary">
               Request portfolio access
             </a>
-            <a href="#how" className="fn-btn-ghost">
-              See how it works
+            <a
+              href="https://app.finnex.capital/farmer/apply"
+              className="fn-btn-ghost"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Submit your project
             </a>
           </div>
         </div>
