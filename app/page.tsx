@@ -1,6 +1,113 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
+
+/* ── ICONS ───────────────────────────────────
+   Simple line icons, stroke = currentColor, sized via .fn-icon-badge.
+   No icon system existed on the site prior to this — these are new. */
+
+const ICON_PROPS = {
+  width: 20,
+  height: 20,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.6,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+};
+
+function IconUpload() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M12 15V4M12 4L7.5 8.5M12 4l4.5 4.5" />
+      <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+    </svg>
+  );
+}
+
+function IconGauge() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M4 15a8 8 0 1 1 16 0" />
+      <path d="M12 15l4-5" />
+      <path d="M12 15h.01" />
+    </svg>
+  );
+}
+
+function IconCheckShield() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
+function IconGrid() {
+  return (
+    <svg {...ICON_PROPS}>
+      <rect x="4" y="4" width="7" height="7" rx="1" />
+      <rect x="13" y="4" width="7" height="7" rx="1" />
+      <rect x="4" y="13" width="7" height="7" rx="1" />
+      <rect x="13" y="13" width="7" height="7" rx="1" />
+    </svg>
+  );
+}
+
+function IconHandshake() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M3 12l4-3 3 2 3-2 3 2 5-3" />
+      <path d="M7 9l4 6 3-2" />
+      <path d="M13 13l3 2 4-3" />
+    </svg>
+  );
+}
+
+function IconDatabaseOff() {
+  return (
+    <svg {...ICON_PROPS}>
+      <ellipse cx="12" cy="6" rx="7" ry="3" />
+      <path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3" />
+      <path d="M5 12v6c0 1.66 3.13 3 7 3 1.6 0 3.06-.24 4.24-.66" />
+      <path d="M4 4l16 16" />
+    </svg>
+  );
+}
+
+function IconAlertTriangle() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M12 4l9 16H3l9-16z" />
+      <path d="M12 10v4" />
+      <path d="M12 17h.01" />
+    </svg>
+  );
+}
+
+function IconScatter() {
+  return (
+    <svg {...ICON_PROPS}>
+      <circle cx="6" cy="7" r="2" />
+      <circle cx="17" cy="6" r="2" />
+      <circle cx="10" cy="15" r="2" />
+      <circle cx="18" cy="17" r="2" />
+    </svg>
+  );
+}
+
+function IconSearchClock() {
+  return (
+    <svg {...ICON_PROPS}>
+      <circle cx="10" cy="10" r="7" />
+      <path d="M10 6.5V10l2.5 1.5" />
+      <path d="M20 20l-4.8-4.8" />
+    </svg>
+  );
+}
 
 const DIMENSIONS = [
   { code: "D1", name: "Agronomy", score: 87 },
@@ -44,21 +151,98 @@ const SCORING_CARDS = [
   },
 ];
 
-const STEPS = [
+const HOW_STEPS = [
   {
     num: "01",
-    title: "Farmer onboarding",
-    desc: "Cooperatives submit structured project applications. Field agents verify land ownership, farmer profiles, input plans, and market linkages on the ground before scoring begins.",
+    title: "Apply",
+    desc: "A farming cooperative submits its project through a structured onboarding form.",
+    icon: <IconUpload />,
   },
   {
     num: "02",
-    title: "Scoring engine",
-    desc: "The six-dimension AI scoring model evaluates each project against sector benchmarks. Every output is reviewed by a human analyst before it reaches the investor layer.",
+    title: "Score",
+    desc: "Our six-dimension engine evaluates Agronomy, Operator, Market, Finance, Monitoring, and Impact.",
+    icon: <IconGauge />,
   },
   {
     num: "03",
-    title: "Investor dashboard",
-    desc: "Verified projects enter the live pipeline with full score cards, field evidence, financial projections, and milestone-linked monitoring data.",
+    title: "Review",
+    desc: "Our team verifies the submission before it's listed.",
+    icon: <IconCheckShield />,
+  },
+  {
+    num: "04",
+    title: "List",
+    desc: "Approved projects appear on the investor dashboard, organized by risk band.",
+    icon: <IconGrid />,
+  },
+  {
+    num: "05",
+    title: "Fund",
+    desc: "Verified investors connect directly with scored, ready-to-fund projects.",
+    icon: <IconHandshake />,
+  },
+];
+
+const PROBLEM_ITEMS = [
+  {
+    title: "No trustworthy data",
+    desc: "Farms don't produce the financial history investors expect.",
+    icon: <IconDatabaseOff />,
+  },
+  {
+    title: "High perceived risk",
+    desc: "Without structured underwriting, smallholder projects look riskier than they are.",
+    icon: <IconAlertTriangle />,
+  },
+  {
+    title: "Fragmented opportunities",
+    desc: "Good projects exist; there's no consistent place to find them.",
+    icon: <IconScatter />,
+  },
+  {
+    title: "Costly diligence",
+    desc: "Manual vetting doesn't scale to thousands of small farms.",
+    icon: <IconSearchClock />,
+  },
+];
+
+const TEAM_MEMBERS = [
+  {
+    name: "Amir Kazemi",
+    role: "CEO",
+    bio: "4 years in agri-development finance.",
+    photo: "/team/amir.jpg",
+  },
+  {
+    name: "Alireza Sharifmoghaddasi",
+    role: "CFO",
+    bio: "PhD in Economics (Monetary Economics); Assistant Professor at Iran's Agricultural Research, Education & Extension Organization (AREEO), specializing in agricultural economics and finance.",
+    photo: "/team/alireza.jpg",
+  },
+  {
+    name: "Shirin Razghandi",
+    role: "COO",
+    bio: "A decade of experience in strategic marketing, market research, and program management; leads FINNEX's operations and go-to-market execution.",
+    photo: "/team/shirin.jpg",
+  },
+];
+
+const WHY_FINNEX = [
+  {
+    num: "01",
+    title: "Built for structured capital, not seasonal cash.",
+    desc: "FINNEX targets project-scale financing — irrigation, land, equipment — the capital smallholder cooperatives can't get from mobile money or microloans.",
+  },
+  {
+    num: "02",
+    title: "Rules-based scoring, on purpose.",
+    desc: "Our scoring engine runs on transparent, auditable rules — not an unproven model. We'll introduce machine learning only once we have real outcome data to train it on, not before.",
+  },
+  {
+    num: "03",
+    title: "Partnered, not reinvented.",
+    desc: "Insurance, input distribution, payments — where strong local and regional partners already exist, we work with them instead of building competing infrastructure from scratch.",
   },
 ];
 
@@ -473,12 +657,12 @@ const CSS = `
   /* ── HOW IT WORKS ────────────────────────── */
   .fn-steps-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
   }
 
   .fn-step-card {
-    padding: 28px;
+    padding: 24px 20px;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--card);
@@ -487,26 +671,41 @@ const CSS = `
 
   .fn-step-card:hover { border-color: var(--border-hi); }
 
+  /* Shared icon badge — reused across How-it-works, Problem, and any
+     future section that needs an icon + short line, so they read as
+     one visual system anchored on the score card's --green/--card tokens. */
+  .fn-icon-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: rgba(74, 222, 128, 0.09);
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+
   .fn-step-num {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--green);
     letter-spacing: 0.08em;
     display: block;
-    margin-bottom: 14px;
+    margin-bottom: 8px;
   }
 
   .fn-step-title {
-    font-size: 16px;
+    font-size: 15.5px;
     font-weight: 600;
     color: var(--sage-on-dark);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .fn-step-desc {
-    font-size: 13.5px;
+    font-size: 13px;
     color: var(--muted-on-dark);
-    line-height: 1.72;
+    line-height: 1.65;
   }
 
   /* ── SCORING MODEL ───────────────────────── */
@@ -546,6 +745,84 @@ const CSS = `
     font-size: 13px;
     color: var(--muted-on-dark);
     line-height: 1.67;
+  }
+
+  /* ── PROBLEM ─────────────────────────────── */
+  .fn-problem-intro {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 680px;
+    margin-bottom: 40px;
+  }
+
+  .fn-problem-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .fn-problem-item .fn-icon-badge { margin-bottom: 14px; }
+
+  .fn-problem-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--sage);
+    margin-bottom: 6px;
+  }
+
+  .fn-problem-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .fn-problem-closing {
+    margin-top: 40px;
+    font-size: 15.5px;
+    font-weight: 500;
+    color: var(--sage);
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  /* ── WHY FINNEX ──────────────────────────── */
+  .fn-why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .fn-why-card {
+    padding: 26px 22px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    transition: border-color 0.2s;
+  }
+
+  .fn-why-card:hover { border-color: var(--border-hi); }
+
+  .fn-why-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .fn-why-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sage-on-dark);
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+
+  .fn-why-desc {
+    font-size: 13px;
+    color: var(--muted-on-dark);
+    line-height: 1.68;
   }
 
   /* ── AUDIENCE SPLIT ─────────────────────── */
@@ -601,6 +878,62 @@ const CSS = `
   }
 
   .fn-audience-link:hover { opacity: 0.75; }
+
+  /* ── TEAM / TRUST ────────────────────────── */
+  .fn-team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .fn-team-card {
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+  }
+
+  .fn-team-photo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-hi);
+    margin-bottom: 16px;
+  }
+
+  .fn-team-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sage-on-dark);
+    margin-bottom: 3px;
+  }
+
+  .fn-team-role {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .fn-team-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 14px;
+  }
+
+  .fn-team-body {
+    font-size: 14.5px;
+    color: var(--sage-on-dark);
+    line-height: 1.75;
+  }
 
   /* ── CTA ─────────────────────────────────── */
   .fn-cta {
@@ -666,10 +999,13 @@ const CSS = `
     .fn-hero          { grid-template-columns: 1fr; gap: 44px; padding-top: 52px; }
     .fn-hero-body     { max-width: 100%; }
     .fn-nav-links     { display: none; }
-    .fn-steps-grid    { grid-template-columns: 1fr; }
+    .fn-steps-grid    { grid-template-columns: repeat(2, 1fr); }
     .fn-dim-cards     { grid-template-columns: repeat(2, 1fr); }
     .fn-stats-inner   { grid-template-columns: repeat(2, 1fr); }
+    .fn-problem-grid  { grid-template-columns: repeat(2, 1fr); }
+    .fn-why-grid      { grid-template-columns: 1fr; }
     .fn-audience-grid { grid-template-columns: 1fr; }
+    .fn-team-grid     { grid-template-columns: 1fr; }
     .fn-stat-cell:nth-child(2)  { border-right: none; }
     .fn-stat-cell:nth-child(3), .fn-stat-cell:nth-child(4) {
       border-top: 1px solid var(--border);
@@ -677,10 +1013,12 @@ const CSS = `
   }
 
   @media (max-width: 560px) {
-    .fn-dim-cards   { grid-template-columns: 1fr; }
-    .fn-footer      { flex-direction: column; text-align: center; gap: 8px; }
-    .fn-section     { padding: 56px 20px; }
-    .fn-hero        { padding: 44px 20px 56px; }
+    .fn-steps-grid    { grid-template-columns: 1fr; }
+    .fn-dim-cards     { grid-template-columns: 1fr; }
+    .fn-problem-grid  { grid-template-columns: 1fr; }
+    .fn-footer        { flex-direction: column; text-align: center; gap: 8px; }
+    .fn-section       { padding: 56px 20px; }
+    .fn-hero          { padding: 44px 20px 56px; }
   }
 `;
 
@@ -738,19 +1076,18 @@ export default function Home() {
         {/* Left column */}
         <div>
           <span className="fn-eyebrow">Agricultural capital intelligence</span>
-          <h1 className="fn-h1">
-            African farmland,
-            <br />
-            scored for <em>institutional capital</em>.
-          </h1>
+          <h1 className="fn-h1">Making smallholder agriculture investable.</h1>
           <p className="fn-hero-body">
-            FINNEX connects African smallholder farming cooperatives with
-            institutional capital. Every project is structured, scored across six
-            dimensions, and reviewed before reaching investors.
+            FINNEX connects East African farming cooperatives with impact
+            investors through a structured six-dimension scoring engine —
+            Agronomy, Operator, Market, Finance, Monitoring, Impact.
           </p>
           <div className="fn-btn-row">
-            <a href="#access" className="fn-btn-primary">
-              Request portfolio access
+            <a
+              href="mailto:invest@finnex.capital?subject=Investor%20Access%20Request"
+              className="fn-btn-primary"
+            >
+              For Investors: Request Access
             </a>
             <a
               href="https://app.finnex.capital/farmer/apply"
@@ -758,7 +1095,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Submit your project
+              For Farmers: Apply for Funding
             </a>
           </div>
         </div>
@@ -809,6 +1146,60 @@ export default function Home() {
         </div>
       </div>
 
+      {/* ── HOW FINNEX WORKS ── */}
+      <div className="fn-section" id="how">
+        <div className="fn-section-label">Process</div>
+        <h2 className="fn-section-h2">How FINNEX works</h2>
+        <div className="fn-steps-grid">
+          {HOW_STEPS.map((s) => (
+            <div key={s.num} className="fn-step-card">
+              <div className="fn-icon-badge">{s.icon}</div>
+              <span className="fn-step-num">{s.num}</span>
+              <div className="fn-step-title">{s.title}</div>
+              <div className="fn-step-desc">{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PROBLEM ── */}
+      <div className="fn-section" id="problem" style={{ paddingTop: 0 }}>
+        <div className="fn-section-label">The gap</div>
+        <h2 className="fn-section-h2">Why smallholder agriculture stays unfunded</h2>
+        <p className="fn-problem-intro">
+          Smallholder farmers produce over a third of the world&apos;s food, yet
+          face a systemic financing gap — not because the opportunity isn&apos;t
+          real, but because it isn&apos;t legible to formal capital.
+        </p>
+        <div className="fn-problem-grid">
+          {PROBLEM_ITEMS.map((p) => (
+            <div key={p.title} className="fn-problem-item">
+              <div className="fn-icon-badge">{p.icon}</div>
+              <div className="fn-problem-title">{p.title}</div>
+              <div className="fn-problem-desc">{p.desc}</div>
+            </div>
+          ))}
+        </div>
+        <p className="fn-problem-closing">
+          FINNEX exists to close this gap — with structure, not guesswork.
+        </p>
+      </div>
+
+      {/* ── WHY FINNEX ── */}
+      <div className="fn-section" id="why" style={{ paddingTop: 0 }}>
+        <div className="fn-section-label">Our approach</div>
+        <h2 className="fn-section-h2">Why FINNEX</h2>
+        <div className="fn-why-grid">
+          {WHY_FINNEX.map((w) => (
+            <div key={w.num} className="fn-why-card">
+              <span className="fn-why-num">{w.num}</span>
+              <div className="fn-why-title">{w.title}</div>
+              <div className="fn-why-desc">{w.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── STATS BAR ── */}
       <div className="fn-stats" id="investors">
         <div className="fn-stats-inner">
@@ -821,26 +1212,10 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── HOW IT WORKS ── */}
-      <div className="fn-section" id="how">
-        <div className="fn-section-label">Process</div>
-        <h2 className="fn-section-h2">How it works</h2>
-        <div className="fn-steps-grid">
-          {STEPS.map((s) => (
-            <div key={s.num} className="fn-step-card">
-              <span className="fn-step-num">{s.num}</span>
-              <div className="fn-step-title">{s.title}</div>
-              <div className="fn-step-desc">{s.desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* ── SCORING MODEL ── */}
       <div
         className="fn-section"
         id="model"
-        style={{ paddingTop: 0 }}
       >
         <div className="fn-section-label">Methodology</div>
         <h2 className="fn-section-h2">Six-dimension scoring model</h2>
@@ -882,6 +1257,36 @@ export default function Home() {
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ── TEAM / TRUST ── */}
+      <div className="fn-section" id="team">
+        <div className="fn-section-label">Trust</div>
+        <h2 className="fn-section-h2">Built on the ground, backed by structure</h2>
+        <div className="fn-team-grid">
+          {TEAM_MEMBERS.map((member) => (
+            <div key={member.name} className="fn-team-card">
+              <Image
+                src={member.photo}
+                alt={member.name}
+                width={72}
+                height={72}
+                className="fn-team-photo"
+              />
+              <div className="fn-team-name">{member.name}</div>
+              <span className="fn-team-role">{member.role}</span>
+              <p className="fn-team-body">{member.bio}</p>
+            </div>
+          ))}
+        </div>
+        <div className="fn-team-card">
+          <div className="fn-team-label">Support</div>
+          <p className="fn-team-body">
+            FINNEX is supported by We Are Changemakers, a Dutch
+            government-recognized Startup Visa facilitator, as part of our
+            founder&apos;s presence in the Netherlands.
+          </p>
         </div>
       </div>
 
