@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 /* ── ICONS ───────────────────────────────────
@@ -252,6 +252,10 @@ const STATS = [
   { value: "5", label: "Target markets" },
   { value: "100%", label: "Admin reviewed" },
 ];
+
+// Same 5 markets + Other as the main farmer application form
+// (finnex-app/app/farmer/apply/page.tsx).
+const COUNTRY_OPTIONS = ["Kenya", "Uganda", "Tanzania", "Ethiopia", "Rwanda"];
 
 
 const CSS = `
@@ -879,6 +883,92 @@ const CSS = `
 
   .fn-audience-link:hover { opacity: 0.75; }
 
+  /* ── ADVISORY FUNNEL ─────────────────────── */
+  .fn-advisory {
+    border-top: 1px solid var(--border);
+  }
+
+  .fn-advisory-inner {
+    max-width: 640px;
+  }
+
+  .fn-advisory-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
+
+  .fn-advisory-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .fn-advisory-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .fn-advisory-field.full { grid-column: 1 / -1; }
+
+  .fn-advisory-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--sage);
+  }
+
+  .fn-advisory-input,
+  .fn-advisory-select {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid rgba(18, 37, 26, 0.16);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--sage);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .fn-advisory-input:focus,
+  .fn-advisory-select:focus { border-color: var(--border-hi); }
+
+  .fn-advisory-input::placeholder { color: rgba(18, 37, 26, 0.32); }
+
+  .fn-advisory-error {
+    grid-column: 1 / -1;
+    font-size: 13px;
+    color: #B91C1C;
+  }
+
+  .fn-advisory-submit-row {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+  }
+
+  .fn-advisory-submit-row .fn-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .fn-advisory-confirm {
+    font-size: 14px;
+    color: var(--green-text);
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .fn-advisory-calendly {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    min-height: 700px;
+  }
+
   /* ── TEAM / TRUST ────────────────────────── */
   .fn-team-grid {
     display: grid;
@@ -1005,6 +1095,7 @@ const CSS = `
     .fn-problem-grid  { grid-template-columns: repeat(2, 1fr); }
     .fn-why-grid      { grid-template-columns: 1fr; }
     .fn-audience-grid { grid-template-columns: 1fr; }
+    .fn-advisory-form { grid-template-columns: 1fr; }
     .fn-team-grid     { grid-template-columns: 1fr; }
     .fn-stat-cell:nth-child(2)  { border-right: none; }
     .fn-stat-cell:nth-child(3), .fn-stat-cell:nth-child(4) {
@@ -1025,6 +1116,64 @@ const CSS = `
 export default function Home() {
   const [displayScore, setDisplayScore] = useState(0);
   const [barsActive, setBarsActive] = useState(false);
+
+  // ── Advisory funnel ──────────────────────────────────
+  const [advName, setAdvName] = useState("");
+  const [advPhone, setAdvPhone] = useState("");
+  const [advEmail, setAdvEmail] = useState("");
+  const [advCountry, setAdvCountry] = useState("");
+  const [advTopic, setAdvTopic] = useState("");
+  const [advError, setAdvError] = useState("");
+  const [advSubmitting, setAdvSubmitting] = useState(false);
+  const [advSubmitted, setAdvSubmitted] = useState(false);
+  const calendlyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!advSubmitted) return;
+    if (!document.querySelector('script[src="https://assets.calendly.com/assets/external/widget.js"]')) {
+      const script = document.createElement("script");
+      script.src = "https://assets.calendly.com/assets/external/widget.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    calendlyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [advSubmitted]);
+
+  async function handleAdvisorySubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setAdvError("");
+    if (!advName.trim()) { setAdvError("Please enter your name."); return; }
+    if (!advTopic.trim()) { setAdvError("Please tell us what you'd like to discuss."); return; }
+    if (!advPhone.trim() && !advEmail.trim()) {
+      setAdvError("Please provide a phone number or email address.");
+      return;
+    }
+
+    setAdvSubmitting(true);
+    try {
+      const res = await fetch("https://finnex-api-production.up.railway.app/api/advisory-inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: advName,
+          phone: advPhone.trim() || null,
+          email: advEmail.trim() || null,
+          country: advCountry || null,
+          topic: advTopic,
+        }),
+      });
+      if (!res.ok) {
+        setAdvError("Something went wrong submitting the form. Please try again.");
+        setAdvSubmitting(false);
+        return;
+      }
+      setAdvSubmitting(false);
+      setAdvSubmitted(true);
+    } catch {
+      setAdvError("Something went wrong submitting the form. Please try again.");
+      setAdvSubmitting(false);
+    }
+  }
 
   useEffect(() => {
     const TARGET = 83;
@@ -1257,6 +1406,102 @@ export default function Home() {
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ── ADVISORY FUNNEL ── */}
+      <div className="fn-section fn-advisory" id="advisory">
+        <div className="fn-advisory-inner">
+          <div className="fn-section-label">Talk to us</div>
+          <h2 className="fn-section-h2">
+            Not sure if your project is ready? Talk to our team first.
+          </h2>
+          <p className="fn-advisory-body">
+            Book a short call to discuss your situation — no commitment, no application required.
+          </p>
+
+          {!advSubmitted ? (
+            <form className="fn-advisory-form" onSubmit={handleAdvisorySubmit}>
+              <div className="fn-advisory-field">
+                <label className="fn-advisory-label" htmlFor="adv-name">Name *</label>
+                <input
+                  id="adv-name"
+                  className="fn-advisory-input"
+                  placeholder="Your name"
+                  value={advName}
+                  onChange={(e) => setAdvName(e.target.value)}
+                />
+              </div>
+              <div className="fn-advisory-field">
+                <label className="fn-advisory-label" htmlFor="adv-country">Country</label>
+                <select
+                  id="adv-country"
+                  className="fn-advisory-select"
+                  value={advCountry}
+                  onChange={(e) => setAdvCountry(e.target.value)}
+                >
+                  <option value="">Select (optional)</option>
+                  {COUNTRY_OPTIONS.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div className="fn-advisory-field">
+                <label className="fn-advisory-label" htmlFor="adv-phone">Phone</label>
+                <input
+                  id="adv-phone"
+                  type="tel"
+                  className="fn-advisory-input"
+                  placeholder="+254 xx xxx xxxx"
+                  value={advPhone}
+                  onChange={(e) => setAdvPhone(e.target.value)}
+                />
+              </div>
+              <div className="fn-advisory-field">
+                <label className="fn-advisory-label" htmlFor="adv-email">Email</label>
+                <input
+                  id="adv-email"
+                  type="email"
+                  className="fn-advisory-input"
+                  placeholder="you@example.com"
+                  value={advEmail}
+                  onChange={(e) => setAdvEmail(e.target.value)}
+                />
+              </div>
+              <div className="fn-advisory-field full">
+                <label className="fn-advisory-label" htmlFor="adv-topic">
+                  What would you like to discuss? *
+                </label>
+                <input
+                  id="adv-topic"
+                  className="fn-advisory-input"
+                  placeholder="e.g. Whether my dairy cooperative qualifies"
+                  value={advTopic}
+                  onChange={(e) => setAdvTopic(e.target.value)}
+                />
+              </div>
+              {advError && <div className="fn-advisory-error">{advError}</div>}
+              <div className="fn-advisory-submit-row">
+                <button type="submit" className="fn-btn-primary" disabled={advSubmitting}>
+                  {advSubmitting ? "Submitting…" : "Continue to book a call"}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <>
+              <div className="fn-advisory-confirm">
+                Thanks — pick a time below and we&apos;ll see you then.
+              </div>
+              <div className="fn-advisory-calendly" ref={calendlyRef}>
+                <div
+                  className="calendly-inline-widget"
+                  data-url="https://calendly.com/amir-finnex/30min"
+                  style={{ minWidth: "320px", height: "700px" }}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 
