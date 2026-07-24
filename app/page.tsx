@@ -211,7 +211,7 @@ const TEAM_MEMBERS = [
   {
     name: "Amir Kazemi",
     role: "CEO",
-    bio: "4 years in agri-development finance.",
+    bio: "Founder. 4 years in agri-development finance, building FINNEX from strategy to shipped product.",
     photo: "/team/amir.jpg",
   },
   {
