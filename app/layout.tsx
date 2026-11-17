@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "FINNEX — Agricultural Capital Intelligence",
   description:
-    "FINNEX transforms high-potential farm projects into structured investment opportunities through AI-based scoring, milestone-based disbursement, and real-time verification.",
+    "FINNEX transforms high-potential farm projects into structured investment opportunities through rules-based scoring, milestone-based disbursement, and real-time verification.",
 };
 
 export default function RootLayout({
